@@ -3,6 +3,7 @@ using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using AutoMapper;
+using Infrastructure.Baskets;
 using Infrastructure.Data;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -25,26 +26,44 @@ namespace API
 
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
-            services.AddDbContext<StoreContext>(x =>
-                x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+            // services.AddDbContext<StoreContext>(x =>
+            //     x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+
+            // services.AddDbContext<AppIdentityDbContext>(x => 
+            // {
+            //     x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+            // });
+
+            services.AddDbContext<StoreContext>(x => 
+                x.UseSqlServer(_config.GetConnectionString("Catalog")));
 
             services.AddDbContext<AppIdentityDbContext>(x => 
-            {
-                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
-            });
+                x.UseSqlServer(_config.GetConnectionString("Identity")));
+
+            services.AddDbContext<BasketsDbContext>(x => 
+               x.UseSqlServer(_config.GetConnectionString("Baskets")));
 
             ConfigureServices(services);
         }
 
         public void ConfigureProductionServices(IServiceCollection services)
         {
-            services.AddDbContext<StoreContext>(x =>
-                x.UseMySql(_config.GetConnectionString("DefaultConnection")));
+            // services.AddDbContext<StoreContext>(x =>
+            //     x.UseMySql(_config.GetConnectionString("DefaultConnection")));
+
+            // services.AddDbContext<AppIdentityDbContext>(x => 
+            // {
+            //     x.UseMySql(_config.GetConnectionString("IdentityConnection"));
+            // });
+
+            services.AddDbContext<StoreContext>(x => 
+                x.UseSqlServer(_config.GetConnectionString("Catalog")));
 
             services.AddDbContext<AppIdentityDbContext>(x => 
-            {
-                x.UseMySql(_config.GetConnectionString("IdentityConnection"));
-            });
+                x.UseSqlServer(_config.GetConnectionString("Identity")));
+
+            services.AddDbContext<BasketsDbContext>(x => 
+               x.UseSqlServer(_config.GetConnectionString("Baskets")));
 
             ConfigureServices(services);
         }
@@ -68,7 +87,11 @@ namespace API
             {
                 opt.AddPolicy("CorsPolicy", policy => 
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                    // policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
             });
         }
