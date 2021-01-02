@@ -1,7 +1,8 @@
 # Get Base Image (Full .NET Core SDK)
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /app
-EXPOSE 5001
+EXPOSE 80
+EXPOSE 443
 
 # Copy csproj and restore as distinct layers
 COPY *.sln .
