@@ -21,7 +21,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger/index.html",
-      "applicationUrl": "https://shopping-api:5001;http://shopping-api:5000",
+      "applicationUrl": "https://shopping-api;http://shopping-api",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

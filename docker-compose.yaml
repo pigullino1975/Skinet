@@ -1,41 +1,70 @@
-version: '3'
+version: '3.6'
 services:
   shopping-api:
-    build: API/
+    container_name: shopping-api
+    build:
+      context: .
+      dockerfile: API/Dockerfile
     ports:
-      - "8080:80"
-      - "8081:443"
+      - "8000:80"
+      - "8001:443"
     environment:
-      ASPNETCORE_URLS: "https://+;http://+"
-      ASPNETCORE_HTTPS_PORT: "8081"
-      ASPNETCORE_ENVIRONMENT: "Development"
+      # - "ASPNETCORE_URLS:https://+;http://+"
+      # - "ASPNETCORE_HTTPS_PORT:8081"
+      # - "ASPNETCORE_ENVIRONMENT:Development"
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT:8001
+      - ASPNETCORE_ENVIRONMENT:Development
+      - Kestrel__Certificates__Default__Password=pa55w0rd!
+      - Kestrel__Certificates__Default__Path=/https/API.pfx
     volumes:
       - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
-      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+      - ${USERPROFILE}\.aspnet\https\API.pfx:/https/API.pfx:ro
+    restart: on-failure
     depends_on:
       - sql-server
       - redis-server
     networks:
       - gateway_net
-
+      
   sql-server:
+    container_name: sql-server
     build: SQLServer/
     ports:
       - "1450:1433"
     volumes:
-      - /var/lib/docker/volumes/mssqluser/_data:/var/opt/sqlserver
-      - /var/lib/docker/volumes/mssqlsystem/_data:/var/opt/mssql
+      - /var/lib/docker/volumes/mssqluser/data:/var/opt/sqlserver
+      - /var/lib/docker/volumes/mssqlsystem/data:/var/opt/mssql
     networks:
       - gateway_net
   
   redis-server:
-    image: "redis:6.0"
+    container_name: redis-server
+    build: RedisServer/
     volumes:
       - ./data:/data
     ports:
       - "6379:6379"
     networks:
       - gateway_net
+
+  # stripe-cli:
+  #   container_name: stripe-cli
+  #   build: Stripe     
+  #   networks:
+  #     - gateway_net
+
+  shopping-web:
+    container_name: shopping-web
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "9000:80"
+    depends_on:
+      - shopping-api      
+    networks:
+      - gateway_net      
 networks:
     gateway_net:
       external: true

@@ -8,6 +8,8 @@ namespace Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<DeliveryMethod> builder)
         {
+            builder.Property(d => d.Id).IsRequired();
+            builder.Property(d => d.Id).ValueGeneratedNever();
             builder.Property(d => d.Price)
                 .HasColumnType("decimal(18,2)");
         }

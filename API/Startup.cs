@@ -40,8 +40,8 @@ namespace API
             services.AddDbContext<AppIdentityDbContext>(x => 
                 x.UseSqlServer(_config.GetConnectionString("Identity")));
 
-            services.AddDbContext<BasketsDbContext>(x => 
-               x.UseSqlServer(_config.GetConnectionString("Baskets")));
+            // services.AddDbContext<BasketsDbContext>(x => 
+            //    x.UseSqlServer(_config.GetConnectionString("Baskets")));
 
             ConfigureServices(services);
         }
