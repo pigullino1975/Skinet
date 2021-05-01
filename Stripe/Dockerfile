@@ -1,1 +1,1 @@
-FROM stripe/stripe-cli
+FROM stripe/stripe-cli:latest

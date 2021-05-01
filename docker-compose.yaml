@@ -6,14 +6,14 @@ services:
       context: .
       dockerfile: API/Dockerfile
     ports:
-      - "8000:80"
-      - "8001:443"
+      - "8080:80"
+      - "8443:443"
     environment:
       # - "ASPNETCORE_URLS:https://+;http://+"
       # - "ASPNETCORE_HTTPS_PORT:8081"
       # - "ASPNETCORE_ENVIRONMENT:Development"
       - ASPNETCORE_URLS=https://+;http://+
-      - ASPNETCORE_HTTPS_PORT:8001
+      - ASPNETCORE_HTTPS_PORT:8443
       - ASPNETCORE_ENVIRONMENT:Development
       - Kestrel__Certificates__Default__Password=pa55w0rd!
       - Kestrel__Certificates__Default__Path=/https/API.pfx
@@ -31,10 +31,10 @@ services:
     container_name: sql-server
     build: SQLServer/
     ports:
-      - "1450:1433"
+      - "14331:1433"
     volumes:
-      - /var/lib/docker/volumes/mssqluser/data:/var/opt/sqlserver
-      - /var/lib/docker/volumes/mssqlsystem/data:/var/opt/mssql
+      - sqlserver-data:/var/opt/sqlserver
+      - sqlserver-data:/var/opt/mssql
     networks:
       - gateway_net
   
@@ -67,4 +67,5 @@ services:
       - gateway_net      
 networks:
     gateway_net:
-      external: true
+volumes: 
+    sqlserver-data:
